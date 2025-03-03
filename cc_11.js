@@ -59,30 +59,57 @@ class Library { // creates class that includes two arrays to keep track of books
     listBooks() { // creates method that adds books to the array
         this.books.forEach(book => console.log(book.getDetails()));
     }
-    lendBook(borrowerId, isbn) {
+    lendBook(borrowerId, isbn) { // creates method that keeps track of lended books
         const borrower = this.borrowers.find(b => b.borrowerId === borrowerId);
         const book = this.books.find(b => b.isbn === isbn);
 
-        if (!borrower) {
+        if (!borrower) { // if borrower does not exist, return "Borrower not found."
             console.log("Borrower not found.")
             return "Borrower not found."
         };
 
-        if (!book) {
+        if (!book) { // if book does not exist, return "Book not found."
             console.log("Book not found.")
             return "Book not found."
         };
 
-        if (book.copies > 0) {
+        if (book.copies > 0) { // if copies are greater than 0, subtract 1 copies
             book.copies -= 1;
             borrower.borrowBook(book);
             console.log( `${borrower.name} borrowed ${book.title}.`)
             return `${borrower.name} borrowed ${book.title}.`
-        } else {
+        } else { // if the copies are not greater than 0, then return the book is out of stock
             console.log(`Sorry, ${book.title} is currently out of stock.`)
             return `Sorry, ${book.title} is currently out of stock.`
         }
     }
+    returnBook(borrowerId, isbn) {
+        const borrower = this.borrowers.find(b => b.borrowerId === borrowerId);
+        const book = this.books.find(b => b.isbn === isbn);
+        
+        if (!borrower) { // if borrower does not exist, return "Borrower not found."
+            console.log("Borrower not found.");
+            return "Borrower not found.";
+        }
+        if (!book) { // if book does not exist, return "Book not found."
+            console.log("Book not found.");
+            return "Book not found.";
+        }
+    
+        const bookIndex = borrower.borrowedBooks.indexOf(book);
+        if (bookIndex !== -1) { // if the borrower has the book, remove the book from the barrower's list
+            
+            borrower.returnBook(book);
+    
+            book.copies += 1; // increase the book's copies
+    
+            console.log(`${borrower.name} returned ${book.title}.`);
+            return `${borrower.name} returned ${book.title}.`;
+        } else { // if the borrower does not have the book, return that the person did not borrow the book
+            console.log(`${borrower.name} did not borrow ${book.title}.`);
+            return `${borrower.name} did not borrow ${book.title}.`;
+        }
+    } 
 }
 
 
@@ -98,4 +125,13 @@ console.log(book1.getDetails());
 // Expected output: "Title: The Great Gatsby, Author: F. Scott Fitzgerald, ISBN: 123456, Copies: 3"
 console.log(borrower1.borrowedBooks);
 // Expected output: ["The Great Gatsby"]
+
+// Task 5 - Implemented Book Returns
+
+library.returnBook(201, 123456);
+console.log(book1.getDetails());
+// Expected output: "Title: The Great Gatsby, Author: F. Scott Fitzgerald, ISBN: 123456, Copies: 4"
+console.log(borrower1.borrowedBooks);
+// Expected output: []
+
 
