@@ -12,7 +12,7 @@ class Book { // creates book class
     }
     updateCopies(quantity) { // creates a class that updates the quantity of copies available
         this.copies += quantity
-        return `The new amount of copies is ${this.stock}`
+        return `The new amount of copies is ${this.copies}`
     }
 };
 
@@ -52,15 +52,50 @@ class Library { // creates class that includes two arrays to keep track of books
         this.books = [];
         this.borrowers = []
     }
+    
     addBook(book) { // creates method that adds a book to the array
         this.books.push(book); 
     }
     listBooks() { // creates method that adds books to the array
         this.books.forEach(book => console.log(book.getDetails()));
     }
+    lendBook(borrowerId, isbn) {
+        const borrower = this.borrowers.find(b => b.borrowerId === borrowerId);
+        const book = this.books.find(b => b.isbn === isbn);
+
+        if (!borrower) {
+            console.log("Borrower not found.")
+            return "Borrower not found."
+        };
+
+        if (!book) {
+            console.log("Book not found.")
+            return "Book not found."
+        };
+
+        if (book.copies > 0) {
+            book.copies -= 1;
+            borrower.borrowBook(book);
+            console.log( `${borrower.name} borrowed ${book.title}.`)
+            return `${borrower.name} borrowed ${book.title}.`
+        } else {
+            console.log(`Sorry, ${book.title} is currently out of stock.`)
+            return `Sorry, ${book.title} is currently out of stock.`
+        }
+    }
 }
+
 
 const library = new Library();
 library.addBook(book1);
 library.listBooks();
 // Output: "Title: The Great Gatsby, Author: F. Scott Fitzgerald, ISBN: 123456, Copies: 4"
+
+// Task 4 - Implemented Book Borrowing
+
+library.lendBook(201, 123456);
+console.log(book1.getDetails());
+// Expected output: "Title: The Great Gatsby, Author: F. Scott Fitzgerald, ISBN: 123456, Copies: 3"
+console.log(borrower1.borrowedBooks);
+// Expected output: ["The Great Gatsby"]
+
